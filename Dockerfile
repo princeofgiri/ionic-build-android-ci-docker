@@ -1,13 +1,16 @@
-FROM ubuntu:16.04
-MAINTAINER Tobias Theobald <tobias@health-cast.com>
+FROM debian:jessie
+MAINTAINER Niklas Merz <niklasmerz@gmx.net>
 
 # Install apt packages
-RUN apt-get update && apt-get install -y git lib32stdc++6 lib32z1 npm nodejs nodejs-legacy s3cmd build-essential curl openjdk-8-jdk-headless sendemail libio-socket-ssl-perl libnet-ssleay-perl && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y git lib32stdc++6 lib32z1 npm nodejs nodejs-legacy s3cmd build-essential curl openjdk-7-jdk sendemail libio-socket-ssl-perl libnet-ssleay-perl && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install android SDK, tools and platforms 
+# Install android SDK, tools and platforms
 RUN cd /opt && curl https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz -o android-sdk.tgz && tar xzf android-sdk.tgz && rm android-sdk.tgz
 ENV ANDROID_HOME /opt/android-sdk-linux
 RUN echo 'y' | /opt/android-sdk-linux/tools/android update sdk -u -a -t platform-tools,build-tools-23.0.3,android-23,extra-android-support,extra-google-m2repository,extra-android-m2repository
+
+#Update npm first
+RUN npm install npm -g
 
 # Install npm packages
 RUN npm i -g cordova ionic gulp bower grunt phonegap && npm cache clean
